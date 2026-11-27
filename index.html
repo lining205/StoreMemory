@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>StoreMemory Demo</title>
+  <style>
+    :root { color-scheme: light; --ink:#17202a; --muted:#5b6b7a; --line:#d9e2ec; --brand:#0f766e; --brand2:#155e75; --bg:#f7fafc; --card:#fff; }
+    * { box-sizing: border-box; }
+    body { margin:0; font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; color:var(--ink); background:linear-gradient(180deg,#ecfeff 0,#f7fafc 320px); }
+    main { max-width: 1080px; margin: 0 auto; padding: 40px 20px 56px; }
+    header { display:grid; gap:14px; margin-bottom:24px; }
+    .eyebrow { color:var(--brand); font-weight:700; letter-spacing:.08em; text-transform:uppercase; font-size:12px; }
+    h1 { margin:0; font-size: clamp(34px, 6vw, 64px); line-height:.95; letter-spacing:-.04em; }
+    .lead { max-width:760px; color:var(--muted); font-size:18px; line-height:1.6; margin:0; }
+    .grid { display:grid; grid-template-columns: 1.1fr .9fr; gap:18px; }
+    @media (max-width: 820px) { .grid { grid-template-columns:1fr; } }
+    .card { background:var(--card); border:1px solid var(--line); border-radius:18px; padding:20px; box-shadow:0 12px 30px rgba(15,23,42,.06); }
+    h2 { margin:0 0 12px; font-size:20px; }
+    p { line-height:1.6; }
+    .muted { color:var(--muted); }
+    .buttons { display:flex; flex-wrap:wrap; gap:10px; margin:16px 0; }
+    button { border:0; border-radius:999px; padding:11px 16px; background:var(--brand); color:white; font-weight:700; cursor:pointer; }
+    button.secondary { background:#e0f2fe; color:var(--brand2); }
+    button:disabled { opacity:.45; cursor:not-allowed; }
+    .output { min-height:190px; background:#0f172a; color:#e2e8f0; border-radius:14px; padding:16px; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size:14px; line-height:1.65; white-space:pre-wrap; }
+    table { width:100%; border-collapse:collapse; font-size:14px; }
+    th, td { border-bottom:1px solid var(--line); padding:9px 6px; text-align:left; vertical-align:top; }
+    th { color:var(--muted); font-weight:700; }
+    .stats { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-top:14px; }
+    .stat { border:1px solid var(--line); border-radius:14px; padding:14px; background:#f8fafc; }
+    .stat b { display:block; font-size:24px; }
+    .stat span { color:var(--muted); font-size:13px; }
+    a { color:var(--brand2); font-weight:700; }
+    .trace { margin:0; padding-left:20px; line-height:1.7; }
+    footer { margin-top:22px; color:var(--muted); font-size:14px; }
+  </style>
+</head>
+<body>
+<main>
+  <header>
+    <div class="eyebrow">ContextCon · Remember Everything</div>
+    <h1>StoreMemory</h1>
+    <p class="lead">One shared Meko memory for a local store’s topic, copy, and review agents. The review agent learns which content brings real local customers, writes that conclusion back, and the next topic round changes.</p>
+  </header>
+
+  <section class="grid">
+    <div class="card">
+      <h2>Run the synthetic demo</h2>
+      <p class="muted">Demo store: PawCare Demo Clinic. All data below is synthetic; no real customer, case, or account data is used.</p>
+      <div class="buttons">
+        <button id="beforeBtn">1. Before learning</button>
+        <button id="reviewBtn" class="secondary" disabled>2. Review learns</button>
+        <button id="afterBtn" class="secondary" disabled>3. After learning</button>
+        <button id="copyBtn" class="secondary" disabled>4. Draft copy</button>
+      </div>
+      <div id="output" class="output">Press “Before learning” to run the topic agent.</div>
+      <div class="stats">
+        <div class="stat"><b>65.08%</b><span>fewer prompt tokens with retrieval</span></div>
+        <div class="stat"><b>305.33</b><span>retrieved tokens, average</span></div>
+        <div class="stat"><b>874.33</b><span>full-dataset tokens, average</span></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Shared memory signals</h2>
+      <table>
+        <thead><tr><th>Topic</th><th>Views</th><th>Customer signals</th></tr></thead>
+        <tbody id="rows"></tbody>
+      </table>
+      <h2 style="margin-top:20px">Decision traces</h2>
+      <ol id="traces" class="trace"><li>Waiting for the first run.</li></ol>
+    </div>
+  </section>
+
+  <section class="card" style="margin-top:18px">
+    <h2>What this proves</h2>
+    <p>Before learning, the topic agent ranks by views and picks entertainment. After the review agent writes its conclusion into shared memory, the same agent ranks by precise customer signals and picks owner-anxiety and preparation-checklist topics. The copy agent then drafts under stored brand rules: plain language, no diagnosis or outcome promises, and in-person checkup guidance.</p>
+    <p><a href="https://github.com/lining205/StoreMemory">Source repository</a> · <a href="results/demo_run_meko_20261127.log">Real Meko run log</a> · <a href="results/token_compare_20261127.md">Token comparison</a></p>
+  </section>
+
+  <footer>Built for ContextCon: Remember Everything. Theme: Agentic marketing — Campaigns That Know the Customer.</footer>
+</main>
+<script>
+const content = [
+  {topic:'Why a cat hides after moving to a new home', views:18200, signals:41},
+  {topic:'Three signs a dog may need a dental checkup', views:12600, signals:28},
+  {topic:'General facts about pet nutrition', views:3900, signals:3},
+  {topic:'What to prepare before a first vaccine visit', views:15400, signals:36},
+  {topic:'Cute pet clips without a care question', views:22100, signals:5}
+];
+const output = document.getElementById('output');
+const traces = document.getElementById('traces');
+const rows = document.getElementById('rows');
+rows.innerHTML = content.map(c => `<tr><td>${c.topic}</td><td>${c.views.toLocaleString()}</td><td>${c.signals}</td></tr>`).join('');
+function topBy(key){ return [...content].sort((a,b)=>b[key]-a[key]).slice(0,2).map(c=>c.topic); }
+function setTraces(items){ traces.innerHTML = items.map(t=>`<li>${t}</li>`).join(''); }
+let afterTopics = [];
+document.getElementById('beforeBtn').onclick = () => {
+  const picks = topBy('views');
+  output.textContent = `BEFORE learning — topic agent ranks by views\n\n${picks.map(p=>'• '+p).join('\n')}\n\nProblem: entertainment wins on views, but it creates weak local demand.`;
+  setTraces(['[topic] Recommended by views only.']);
+  document.getElementById('reviewBtn').disabled = false;
+};
+document.getElementById('reviewBtn').onclick = () => {
+  output.textContent = `REVIEW agent writes learning conclusion to shared memory\n\nGeneric knowledge and entertainment content should be deprioritized; owner-anxiety and preparation-checklist topics create stronger local booking intent.`;
+  setTraces(['[topic] Recommended by views only.','[review] Wrote learning conclusion to shared memory.']);
+  document.getElementById('afterBtn').disabled = false;
+};
+document.getElementById('afterBtn').onclick = () => {
+  afterTopics = topBy('signals');
+  output.textContent = `AFTER learning — topic agent ranks by precise customer signals\n\n${afterTopics.map(p=>'• '+p).join('\n')}\n\nThe recommendation changed because shared memory changed.`;
+  setTraces(['[topic] Recommended by views only.','[review] Wrote learning conclusion to shared memory.','[topic] Recommended by precise customer signals after learning.']);
+  document.getElementById('copyBtn').disabled = false;
+};
+document.getElementById('copyBtn').onclick = () => {
+  const topic = afterTopics[0] || topBy('signals')[0];
+  output.textContent = `COPY agent drafts under stored brand rules\n\nHook: Owners keep asking this before booking. Topic: ${topic}. We explain what to prepare and when an in-person checkup is the safer next step. No diagnosis or outcome is promised online.`;
+  setTraces(['[topic] Recommended by views only.','[review] Wrote learning conclusion to shared memory.','[topic] Recommended by precise customer signals after learning.','[copy] Drafted copy under brand rules stored in memory.']);
+};
+</script>
+</body>
+</html>
