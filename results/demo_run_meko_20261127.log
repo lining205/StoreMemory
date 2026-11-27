@@ -1,0 +1,37 @@
+=== SEED synthetic data into Meko ===
+datapack_id=efc06aab-2cc2-48fe-bb21-fec43a478446
+conversation_id=633588d60b5f69d405bffb17fb031eaf
+store_profile_memory=existing
+content_memory demo-content-01=existing
+content_memory demo-content-02=existing
+content_memory demo-content-03=existing
+content_memory demo-content-04=existing
+content_memory demo-content-05=existing
+conversation_seed=ok
+
+=== BEFORE learning (topic agent retrieves Meko memory and ranks by views) ===
+ - Cute pet clips without a care question
+ - Why a cat hides after moving to a new home
+
+=== REVIEW agent writes learning conclusion to Meko ===
+learning_memory=5c019555-eecf-4489-8bf6-c56126b211d7
+learning_readback=ok
+
+=== AFTER learning (topic agent ranks by precise customer signals) ===
+ - Why a cat hides after moving to a new home
+ - What to prepare before a first vaccine visit
+Expected change: The topic agent should stop recommending generic pet trivia and prioritize preparation checklists and symptom-to-checkup guidance with safe medical wording.
+
+=== COPY agent retrieves brand rules and stores an artifact ===
+brand_rules_readback=ok
+artifact_hash=c7316b994b69c64d99359dbfca6510f0b413a313002e77cbe437a1192018f89d
+artifact_readback=ok
+ - Hook: Owners keep asking this before booking. Topic: Why a cat hides after moving to a new home. We explain what to prepare and when an in-person checkup is the safer next step. No diagnosis or outcome is promised online.
+
+=== DECISION TRACES (recorded in Meko conversation) ===
+ - [topic] before learning ranked by views
+ - [review] learning conclusion written and read back
+ - [topic] after learning ranked by precise customer signals
+ - [copy] draft stored as Meko artifact
+
+OK: real Meko memory changed the topic recommendation.

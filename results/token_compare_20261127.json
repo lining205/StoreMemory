@@ -1,0 +1,64 @@
+{
+  "token_method": "tiktoken cl100k_base",
+  "runs_per_task": 3,
+  "tasks": [
+    {
+      "task": "topic_recommendation",
+      "full_tokens": 871,
+      "retrieved_tokens_runs": [
+        358,
+        358,
+        358
+      ],
+      "retrieved_tokens_avg": 358,
+      "snippet_counts": [
+        6,
+        6,
+        6
+      ],
+      "tokens_saved_avg": 513,
+      "savings_pct": 58.9
+    },
+    {
+      "task": "copy_draft",
+      "full_tokens": 880,
+      "retrieved_tokens_runs": [
+        230,
+        230,
+        230
+      ],
+      "retrieved_tokens_avg": 230,
+      "snippet_counts": [
+        3,
+        3,
+        3
+      ],
+      "tokens_saved_avg": 650,
+      "savings_pct": 73.86
+    },
+    {
+      "task": "review_conclusion",
+      "full_tokens": 872,
+      "retrieved_tokens_runs": [
+        328,
+        328,
+        328
+      ],
+      "retrieved_tokens_avg": 328,
+      "snippet_counts": [
+        5,
+        5,
+        5
+      ],
+      "tokens_saved_avg": 544,
+      "savings_pct": 62.39
+    }
+  ],
+  "average": {
+    "full_tokens": 874.33,
+    "retrieved_tokens": 305.33,
+    "tokens_saved": 569.0,
+    "savings_pct": 65.08
+  },
+  "note": "Synthetic PawCare Demo Clinic data only. Full prompt contains the whole synthetic dataset; retrieved prompt contains Meko memory snippets filtered by metadata kind for the task."
+}
